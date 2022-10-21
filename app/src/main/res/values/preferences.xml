@@ -10,7 +10,7 @@
     <string name="timestamp" translatable="false">false</string>
     <string name="appicon" translatable="false">true</string>
     <string name="stealth" translatable="false">false</string>
-    <string name="autostart" translatable="false">false</string>
+    <string name="autostart" translatable="false">true</string>
     <string name="autostart_delay" translatable="false">30</string>
     <string name="nettrack" translatable="false">false</string>
     <string name="powertrack" translatable="false">false</string>
@@ -24,7 +24,7 @@
     <string name="http_port" translatable="false">5080</string>
     <!-- https://wiki.openwrt.org/doc/howto/http.httpd -->
     <string name="http_conf" translatable="false">A:127.0.0.1 D:*</string>
-    <string name="profile" translatable="false">Pi-hole</string>
+    <string name="profile" translatable="false">Raspbian</string>
     <string name="debug_mode" translatable="false">true</string>
     <string name="trace_mode" translatable="false">false</string>
     <string name="logger" translatable="false">false</string>
@@ -36,7 +36,7 @@
     <string name="source_path" translatable="false">https://github.com/DesktopECHO/linuxdeploy-images/releases/latest/download/raspbian.tgz</string>
     <string name="target_type" translatable="false">file</string>
     <string name="target_path" translatable="false">@string/target_path_file</string>
-    <string name="target_path_file" translatable="false">./raspbian.img</string>
+    <string name="target_path_file" translatable="false">raspbian.img</string>
     <string name="target_path_directory" translatable="false">/data/local/raspbian.tgz</string>
     <string name="target_path_partition" translatable="false">/dev/block/mmcblkXpY</string>
     <string name="target_path_ram" translatable="false">/data/local/ram</string>
@@ -52,7 +52,7 @@
     <string name="net_trigger" translatable="false"></string>
     <string name="power_trigger" translatable="false"></string>
     <string name="is_init" translatable="false">true</string>
-    <string name="init" translatable="false">run-parts</string>
+    <string name="init" translatable="false">sysv</string>
     <string name="init_path" translatable="false">/etc/rc.local</string>
     <string name="init_level" translatable="false">3</string>
     <string name="init_user" translatable="false">root</string>
