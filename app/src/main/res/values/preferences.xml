@@ -36,7 +36,7 @@
     <string name="source_path" translatable="false">https://github.com/DesktopECHO/linuxdeploy-images/releases/latest/download/raspbian.tgz</string>
     <string name="target_type" translatable="false">file</string>
     <string name="target_path" translatable="false">@string/target_path_file</string>
-    <string name="target_path_file" translatable="false">raspbian.img</string>
+    <string name="target_path_file" translatable="false">./raspbian.img</string>
     <string name="target_path_directory" translatable="false">/data/local/raspbian.tgz</string>
     <string name="target_path_partition" translatable="false">/dev/block/mmcblkXpY</string>
     <string name="target_path_ram" translatable="false">/data/local/ram</string>
