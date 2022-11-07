@@ -216,40 +216,14 @@
     </string-array>
     <string-array name="desktop_values" translatable="false">
         <item>xterm</item>
-        <item>lxde</item>
-        <item>xfce</item>
-        <item>mate</item>
-        <item>other</item>
     </string-array>
     <string-array name="desktop_entries">
         <item>XTerm</item>
-        <item>LXDE</item>
-        <item>Xfce</item>
-        <item>MATE</item>
-        <item>Other</item>
     </string-array>
     <string-array name="distrib_values" translatable="false">
-        <item>alpine</item>
-        <item>archlinux</item>
-        <item>centos</item>
-        <item>debian</item>
-        <item>fedora</item>
-        <item>kali</item>
-        <item>slackware</item>
-        <item>ubuntu</item>
-        <item>docker</item>
         <item>rootfs</item>
     </string-array>
     <string-array name="distrib_entries" translatable="false">
-        <item>Alpine</item>
-        <item>Arch</item>
-        <item>CentOS</item>
-        <item>Debian</item>
-        <item>Fedora</item>
-        <item>Kali</item>
-        <item>Slackware</item>
-        <item>Ubuntu</item>
-        <item>Docker</item>
         <item>rootfs.tar</item>
     </string-array>
     <string-array name="init_values" translatable="false">
