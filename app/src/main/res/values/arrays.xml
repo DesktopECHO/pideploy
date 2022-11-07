@@ -224,7 +224,7 @@
         <item>rootfs</item>
     </string-array>
     <string-array name="distrib_entries" translatable="false">
-        <item>rootfs.tar</item>
+        <item>Raspbian</item>
     </string-array>
     <string-array name="init_values" translatable="false">
         <item>run-parts</item>

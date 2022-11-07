@@ -796,11 +796,12 @@ rootfs_import()
         is_ok "fail" "done" || return 1
     ;;
     *gz)
-        msg -n "Importing rootfs from tar.gz archive ... "
+        msg -n "Download in progress, one moment ··"
         if [ -e "${rootfs_file}" ]; then
             tar xzf "${rootfs_file}" -C "${CHROOT_DIR}"
         elif [ -z "${rootfs_file##http*}" ]; then
-            wget -q -O - "${rootfs_file}" | tar xz -C "${CHROOT_DIR}"
+            msg "·"
+            wget -q -O - "${rootfs_file}" | tar xz -C "${CHROOT_DIR}" &> /dev/null
         else
             msg "fail"; return 1
         fi
