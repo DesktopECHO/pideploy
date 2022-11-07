@@ -156,7 +156,7 @@
 
     <!-- INSTALL -->
     <string name="title_install_dialog">Install</string>
-    <string name="message_install_dialog">Download and install latest Raspbian image?</string>
+    <string name="message_install_dialog">Download and apply latest Raspbian image?</string>
     <!-- CONFIGURE -->
     <string name="title_configure_dialog">Configure</string>
     <string name="message_configure_dialog">Start configuration of the container?</string>
