@@ -13,8 +13,8 @@
     <string name="nav_exit">Exit</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="menu_install">Install</string>
-    <string name="menu_configure">Configure</string>
+    <string name="menu_install">New Deployment</string>
+    <string name="menu_configure">Apply Config</string>
     <string name="menu_export">Export</string>
     <string name="menu_status">Status</string>
     <string name="menu_clear">Clear</string>
@@ -155,11 +155,11 @@
     <string name="dialog_title_logfile_preference">Log file</string>
 
     <!-- INSTALL -->
-    <string name="title_install_dialog">Install</string>
+    <string name="title_install_dialog">New Deployment</string>
     <string name="message_install_dialog">Download and apply latest Raspbian image?</string>
     <!-- CONFIGURE -->
-    <string name="title_configure_dialog">Configure</string>
-    <string name="message_configure_dialog">Start configuration of the container?</string>
+    <string name="title_configure_dialog">Apply Configuration</string>
+    <string name="message_configure_dialog">Apply changes made in container settings?</string>
     <!-- EXPORT -->
     <string name="title_export_dialog">Export</string>
 
