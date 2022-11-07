@@ -352,7 +352,7 @@
     <string name="summary_fb_refresh_preference">Force refresh framebuffer</string>
 
     <!-- HELP -->
-    <string name="help_text">\n<b>Pi Deploy</b>\n\nThis application will download and install Raspbian\ninto a chroot container on your Android device.\n\nTo deploy a new Raspbian instance:\n\n1. Ensure you have superuser (root) privileges.\n2. Tap the Actions menu (Located at top right, three dots ⋮ ) \n3. Tap \"New Deployment\" and wait a fe moments for download/installation.\n4. Tap \"START\" button to launch your Raspbian instance.\n5. Connect to Raspbian via SSH, RDP, or Web interface.\n\n</string>
+    <string name="help_text">\n<b>Pi Deploy</b>\n\nThis application will download and install Raspbian\ninto a chroot container on your Android device.\n\nTo deploy a new Raspbian instance:\n\n 1. Ensure you have superuser (root) privileges.\n 2. Tap the \"More options\" menu (Three dots ⋮ at top right of screen)\n 3. Tap \"New Deployment\" and wait a few moments for download to complete.\n 4. Tap \"START\" button to launch your Raspbian instance.\n 5. Connect to Raspbian via SSH, RDP, or Web interface.\n\n</string>
     <!-- ABOUT -->
     <string name="about_text">This application installs the selected GNU/Linux distribution and executes it in a chroot-container.\n\nFor more information see <a href="https://github.com/meefik/pideploy">project page</a>, <a href="http://4pda.ru/forum/index.php?showtopic=378043">forum</a> or <a href="https://meefik.github.io">developer site</a>.\n\n&#169; 2012&#8211;2019 Anton Skshidlevsky, GPLv3</string>
     <string name="service_notification_channel_name">Services</string>
