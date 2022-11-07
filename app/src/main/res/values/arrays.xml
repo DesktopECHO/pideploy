@@ -39,15 +39,15 @@
         <item>Light</item>
     </string-array>
     <string-array name="target_type_values" translatable="false">
-        <item>file</item>
         <item>directory</item>
+        <item>file</item>
         <item>partition</item>
         <item>ram</item>
         <item>custom</item>
     </string-array>
     <string-array name="target_type_entries">
-        <item>File</item>
         <item>Directory</item>
+        <item>File</item>
         <item>Partition</item>
         <item>RAM</item>
         <item>Custom</item>
