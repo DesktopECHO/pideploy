@@ -159,7 +159,7 @@
     <string name="message_install_dialog">Download and apply latest Raspbian image?</string>
     <!-- CONFIGURE -->
     <string name="title_configure_dialog">Apply Configuation</string>
-    <string name="message_configure_dialog">Apply configuation changes?</string>
+    <string name="message_configure_dialog">Apply changes made in Raspbian Properties?</string>
     <!-- EXPORT -->
     <string name="title_export_dialog">Image Backup Destination</string>
 
@@ -352,7 +352,7 @@
     <string name="summary_fb_refresh_preference">Force refresh framebuffer</string>
 
     <!-- HELP -->
-    <string name="help_text">\n<b>Pi Deploy</b>\n\nThis application will download and install Raspbian\ninto a chroot container on your Android device.\n\nTo deploy a new Raspbian instance:\n\n 1. Ensure you have superuser (root) privileges.\n 2. Tap the \"Options\" menu (Three dots ⋮ at top right of screen)\n 3. Tap \"New Deployment\" and wait for download to complete.\n 4. Tap \"START\" button to launch your Raspbian instance.\n 5. Connect to Raspbian via SSH, RDP, or Web interface.\n\n</string>
+    <string name="help_text"><b>Pi Deploy - Getting Started</b>\nDeploy a new Raspbian instance:\n\n 1. Ensure you have superuser (root)\n    privileges on this device.\n\n 2. Tap the \"Options\" menu\n    (Three dots ⋮ at top right of screen)\n\n 3. Tap \"New Deployment\" and wait a few\n    moments for download to complete.\n\n 4. Tap \"START\" button to launch\n    your Raspbian instance.\n\n 5. Connect to Raspbian via\n    SSH, RDP, or Web interface.\n\n</string>
     <!-- ABOUT -->
     <string name="about_text">This application installs the selected GNU/Linux distribution and executes it in a chroot-container.\n\nFor more information see <a href="https://github.com/meefik/linuxdeploy">project page</a>, <a href="http://4pda.ru/forum/index.php?showtopic=378043">forum</a> or <a href="https://meefik.github.io">developer site</a>.\n\n&#169; 2012&#8211;2019 Anton Skshidlevsky, GPLv3</string>
     <string name="service_notification_channel_name">Services</string>
