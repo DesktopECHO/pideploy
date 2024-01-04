@@ -120,7 +120,7 @@ is_archive()
 {
     local src="$1"
     [ -n "${src}" ] || return 1
-    if [ -z "${src##*gz}" -o -z "${src##*bz2}" -o -z "${src##*xz}" ]; then
+    if [ -z "${src##*gz}" -o -z "${src##*bz2}" -o -z "${src##*xz}" -o -z "${src##*zst}" ]; then
         return 0
     fi
     return 1
@@ -206,12 +206,23 @@ chroot_exec()
     chroot)
         if [ -n "${username}" ]; then
             if [ $# -gt 0 ]; then
-                chroot "${CHROOT_DIR}" /bin/su - ${username} -c "$*"
+                chroot ${METHOD_OPTIONS} "${CHROOT_DIR}" /bin/su - ${username} -c "$*"
             else
-                chroot "${CHROOT_DIR}" /bin/su - ${username}
+                chroot ${METHOD_OPTIONS} "${CHROOT_DIR}" /bin/su - ${username}
             fi
         else
-            PATH="${path}" chroot "${CHROOT_DIR}" $*
+            PATH="${path}" chroot ${METHOD_OPTIONS} "${CHROOT_DIR}" $*
+        fi
+    ;;
+    unshare)
+        if [ -n "${username}" ]; then
+            if [ $# -gt 0 ]; then
+                unshare ${METHOD_OPTIONS} -R "${CHROOT_DIR}" /bin/su - ${username} -c "$*"
+            else
+                unshare ${METHOD_OPTIONS} -R "${CHROOT_DIR}" /bin/su - ${username}
+            fi
+        else
+            PATH="${path}" unshare ${METHOD_OPTIONS} -R "${CHROOT_DIR}" $*
         fi
     ;;
     proot)
@@ -518,8 +529,10 @@ container_mounted()
 {
     if [ "${METHOD}" = "chroot" ]; then
         is_mounted "${CHROOT_DIR}"
-    else
-        return 0
+    elif [ "${METHOD}" = "unshare" ]; then
+        is_mounted "${CHROOT_DIR}"
+	else
+		return 0
     fi
 }
 
@@ -659,7 +672,7 @@ mount_part()
 
 container_mount()
 {
-    [ "${METHOD}" = "chroot" ] || return 0
+    [ "${METHOD}" = "chroot" ] || [ "${METHOD}" = "unshare" ] || return 0
 
     if [ $# -eq 0 ]; then
         container_mount root proc sys dev shm pts fd tty tun binfmt_misc
@@ -787,7 +800,7 @@ rootfs_import()
     *tar)
         msg -n "Importing rootfs from tar archive ... "
         if [ -e "${rootfs_file}" ]; then
-            tar xf "${rootfs_file}" -C "${CHROOT_DIR}"
+            tar axf "${rootfs_file}" -C "${CHROOT_DIR}"
         elif [ -z "${rootfs_file##http*}" ]; then
             wget -q -O - "${rootfs_file}" | tar x -C "${CHROOT_DIR}"
         else
@@ -796,12 +809,11 @@ rootfs_import()
         is_ok "fail" "done" || return 1
     ;;
     *gz)
-        msg -n "Download in progress, one moment ··"
+        msg -n "Importing rootfs from tar.gz archive ... "
         if [ -e "${rootfs_file}" ]; then
-            tar xzf "${rootfs_file}" -C "${CHROOT_DIR}"
+            tar axf "${rootfs_file}" -C "${CHROOT_DIR}"
         elif [ -z "${rootfs_file##http*}" ]; then
-            msg "·"
-            wget -q -O - "${rootfs_file}" | tar xz -C "${CHROOT_DIR}" &> /dev/null
+            wget -q -O - "${rootfs_file}" | tar xz -C "${CHROOT_DIR}"
         else
             msg "fail"; return 1
         fi
@@ -810,7 +822,7 @@ rootfs_import()
     *bz2)
         msg -n "Importing rootfs from tar.bz2 archive ... "
         if [ -e "${rootfs_file}" ]; then
-            tar xjf "${rootfs_file}" -C "${CHROOT_DIR}"
+            tar axf "${rootfs_file}" -C "${CHROOT_DIR}"
         elif [ -z "${rootfs_file##http*}" ]; then
             wget -q -O - "${rootfs_file}" | tar xj -C "${CHROOT_DIR}"
         else
@@ -821,7 +833,7 @@ rootfs_import()
     *xz)
         msg -n "Importing rootfs from tar.xz archive ... "
         if [ -e "${rootfs_file}" ]; then
-            tar xJf "${rootfs_file}" -C "${CHROOT_DIR}"
+            tar axf "${rootfs_file}" -C "${CHROOT_DIR}"
         elif [ -z "${rootfs_file##http*}" ]; then
             wget -q -O - "${rootfs_file}" | tar xJ -C "${CHROOT_DIR}"
         else
@@ -829,8 +841,19 @@ rootfs_import()
         fi
         is_ok "fail" "done" || return 1
     ;;
+    *zst)
+        msg -n "Importing rootfs from tar.zst archive ... "
+        if [ -e "${rootfs_file}" ]; then
+            tar axf "${rootfs_file}" -C "${CHROOT_DIR}"
+        elif [ -z "${rootfs_file##http*}" ]; then
+            wget -q -O - "${rootfs_file}" | tar x --zstd -C "${CHROOT_DIR}"
+        else
+            msg "fail"; return 1
+        fi
+        is_ok "fail" "done" || return 1
+    ;;
     *)
-        msg "Incorrect filename, supported only tar, tar.gz, tar.bz2 or tar.xz archives."
+        msg "Incorrect filename, supported only tar, tar.gz, tar.bz2 tar.xz or tar.zst archives."
         return 1
     ;;
     esac
@@ -847,21 +870,26 @@ rootfs_export()
     case "${rootfs_file}" in
     *gz)
         msg -n "Exporting rootfs as tar.gz archive ... "
-        tar czvf "${rootfs_file}" --exclude='./dev' --exclude='./sys' --exclude='./proc' -C "${CHROOT_DIR}" . >/dev/null
+        tar acf "${rootfs_file}" --exclude='./dev' --exclude='./sys' --exclude='./proc' -C "${CHROOT_DIR}" . >/dev/null
         is_ok "fail" "done" || return 1
     ;;
     *bz2)
         msg -n "Exporting rootfs as tar.bz2 archive ... "
-        tar cjvf "${rootfs_file}" --exclude='./dev' --exclude='./sys' --exclude='./proc' -C "${CHROOT_DIR}" . >/dev/null
+        tar acf "${rootfs_file}" --exclude='./dev' --exclude='./sys' --exclude='./proc' -C "${CHROOT_DIR}" . >/dev/null
         is_ok "fail" "done" || return 1
     ;;
     *xz)
         msg -n "Exporting rootfs as tar.xz archive ... "
-        tar cJvf "${rootfs_file}" --exclude='./dev' --exclude='./sys' --exclude='./proc' -C "${CHROOT_DIR}" . >/dev/null
+        tar acf "${rootfs_file}" --exclude='./dev' --exclude='./sys' --exclude='./proc' -C "${CHROOT_DIR}" . >/dev/null
+        is_ok "fail" "done" || return 1
+    ;;
+    *zst)
+        msg -n "Exporting rootfs as tar.zst archive ... "
+        tar acf "${rootfs_file}" --exclude='./dev' --exclude='./sys' --exclude='./proc' -C "${CHROOT_DIR}" . >/dev/null
         is_ok "fail" "done" || return 1
     ;;
     *)
-        msg "Incorrect filename, supported only gz, bz2 or xz archives."
+        msg "Incorrect filename, supported only gz, bz2 xz or zst archives."
         return 1
     ;;
     esac
@@ -957,8 +985,8 @@ COMMANDS:
       -i - install without configure
       -c - configure without install
       -n NAME - skip installation of this component
-   import FILE|URL - import a rootfs into the current container from archive (tgz, tbz2 or txz)
-   export FILE - export the current container as a rootfs archive (tgz, tbz2 or txz)
+   import FILE|URL - import a rootfs into the current container from archive (tgz, tbz2 txz or zst)
+   export FILE - export the current container as a rootfs archive (tgz, tbz2 txz or zst)
    shell [-u USER] [COMMAND] - execute the specified command in the container, by default /bin/bash
       -u USER - switch to the specified user
    mount - mount the container

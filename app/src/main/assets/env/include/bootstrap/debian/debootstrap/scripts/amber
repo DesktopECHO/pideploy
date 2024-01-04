@@ -1,3 +1,15 @@
+
+# For PureOS "amber"
+# PureOS: https://www.pureos.net/
+# Contact: https://tracker.pureos.net/
+
+mirror_style release
+download_style apt
+finddebs_style from-indices
+variants - buildd fakechroot minbase
+keyring /usr/share/keyrings/pureos-archive-keyring.gpg
+default_mirror https://repo.pureos.net/pureos/
+
 if doing_variant fakechroot; then
 	test "$FAKECHROOT" = "true" || error 1 FAKECHROOTREQ "This variant requires fakechroot environment to be started"
 fi
@@ -12,14 +24,18 @@ esac
 work_out_debs () {
 	required="$(get_debs Priority: required)"
 
+	base="pureos-archive-keyring"
 	if doing_variant - || doing_variant fakechroot; then
 		#required="$required $(get_debs Priority: important)"
 		#  ^^ should be getting debconf here somehow maybe
-		base="$(get_debs Priority: important)"
+		base="$base $(get_debs Priority: important)"
+
+		# we want the PureOS minimal dependency set to be installed
+		base="$base pureos-minimal"
 	elif doing_variant buildd; then
-		base="apt build-essential"
+		base="$base apt build-essential"
 	elif doing_variant minbase; then
-		base="apt"
+		base="$base apt"
 	fi
 
 	if doing_variant fakechroot; then
@@ -29,49 +45,14 @@ work_out_debs () {
 
 	case $MIRRORS in
 	    https://*)
-		case "$CODENAME" in
-			# apt-transport-https exists from lenny to stretch
-			lenny|squeeze|wheezy|jessie*|stretch)
-			base="$base apt-transport-https ca-certificates"
-			;;
-			*)
-			base="$base ca-certificates"
-			;;
-		esac
+		base="$base ca-certificates"
 		;;
-	esac
-
-	# On suites >= bookworm, either we set up a merged-/usr system
-	# via setup_merged_usr, or we deliberately avoided that migration
-	# by creating the flag file. This means there's no need for the
-	# live migration 'usrmerge' package and its extra dependencies:
-	# we can install the empty 'usr-is-merged' metapackage to indicate
-	# that the transition has been done.
-	case "$CODENAME" in
-		etch*|lenny|squeeze|wheezy|jessie*|stretch|buster|bullseye)
-			;;
-		*)
-			required="$required usr-is-merged"
-			EXCLUDE_DEPENDENCY="$EXCLUDE_DEPENDENCY usrmerge"
-			;;
 	esac
 }
 
 first_stage_install () {
-	case "$CODENAME" in
-		# "merged-usr" blacklist for past releases
-		etch*|lenny|squeeze|wheezy|jessie*)
-			[ -z "$MERGED_USR" ] && MERGED_USR="no"
-			;;
-		*)
-			# see https://bugs.debian.org/838388
-			EXTRACT_DEB_TAR_OPTIONS="$EXTRACT_DEB_TAR_OPTIONS -k"
-			;;
-	esac
-
-	if [ "$CODENAME" = "stretch" ] && [ -z "$MERGED_USR" ]; then
-		MERGED_USR="no"
-	fi
+	MERGED_USR="yes"
+	EXTRACT_DEB_TAR_OPTIONS="$EXTRACT_DEB_TAR_OPTIONS -k"
 
 	setup_merged_usr
 	extract $required
@@ -87,15 +68,9 @@ first_stage_install () {
 	fi
 
 	setup_devices
-
-	if doing_variant fakechroot || [ "$CONTAINER" = "docker" ]; then
-		setup_proc_symlink
-	fi
 }
 
 second_stage_install () {
-	in_target /bin/true
-
 	setup_dynamic_devices
 
 	x_feign_install () {
@@ -124,7 +99,9 @@ Status: install ok installed" >> "$TARGET/var/lib/dpkg/status"
 		baseprog="$(($baseprog + ${1:-1}))"
 	}
 
-	if ! doing_variant fakechroot; then
+	if doing_variant fakechroot; then
+		setup_proc_fakechroot
+	else
 		setup_proc
 		in_target /sbin/ldconfig
 	fi
@@ -182,6 +159,12 @@ Status: install ok installed" >> "$TARGET/var/lib/dpkg/status"
 		dpkg_progress $baseprog $bases UNPACKREQ "Unpacking required packages" UNPACKING
 
 	info CONFREQ "Configuring required packages..."
+
+	if doing_variant fakechroot && [ -e "$TARGET/var/lib/dpkg/info/initscripts.postinst" ]
+	then
+		# fix initscripts postinst (no mounting possible, and wrong if condition)
+		sed -i '/dpkg.*--compare-versions/ s/\<lt\>/lt-nl/' "$TARGET/var/lib/dpkg/info/initscripts.postinst"
+	fi
 
 	echo \
 "#!/bin/sh

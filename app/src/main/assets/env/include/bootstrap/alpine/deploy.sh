@@ -16,6 +16,17 @@ fi
 
 [ -n "${SOURCE_PATH}" ] || SOURCE_PATH="http://dl-cdn.alpinelinux.org/alpine/"
 
+apk_repository()
+{
+  # Backup repositories
+  if [ -e "${CHROOT_DIR}/etc/apk/repositories" ]; then
+      cp "${CHROOT_DIR}/etc/apk/repositories" "${CHROOT_DIR}/etc/apk/repositories.bak"
+  fi
+  # Update repositories
+  echo "${SOURCE_PATH%/}/${SUITE}/main" > "${CHROOT_DIR}/etc/apk/repositories"
+  echo "${SOURCE_PATH%/}/${SUITE}/community" >> "${CHROOT_DIR}/etc/apk/repositories"
+}
+
 apk_install()
 {
     local packages="$@"
@@ -40,6 +51,10 @@ do_install()
     is_ok "fail" "done" || return 1
 
     component_exec core/emulator core/mnt core/net
+
+    msg -n "Update repository ... "
+    apk_repository
+    is_ok "fail" "done"
 
     msg "Installing packages: "
     apk_install shadow sudo tzdata ${EXTRA_PACKAGES}
