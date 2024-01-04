@@ -811,9 +811,21 @@ rootfs_import()
     *gz)
         msg -n "Importing rootfs from tar.gz archive ... "
         if [ -e "${rootfs_file}" ]; then
+            echo "                                               "
+            echo "______________________________________________ "
+            echo "                                               "
+            echo "   Local disk image selected, please wait...   "
+            echo "______________________________________________ "
+            echo "                                               "
             tar axf "${rootfs_file}" -C "${CHROOT_DIR}"
         elif [ -z "${rootfs_file##http*}" ]; then
-            wget -q -O - "${rootfs_file}" | tar xz -C "${CHROOT_DIR}"
+            echo "                                               "
+            echo "______________________________________________ "
+            echo "                                               "
+            echo "    Downloading disk image, please wait...     "
+            echo "______________________________________________ "
+            echo "                                               "
+            curl --no-progress-meter -L --dns-servers 9.9.9.9,1.1.1.1 "${rootfs_file}" | tar xz -C "${CHROOT_DIR}"
         else
             msg "fail"; return 1
         fi
