@@ -1,10 +1,12 @@
-# Notice:
+# Notice - This project has been superseded by [Trixie.apk](https://github.com/DesktopECHO/trixie.apk)
 
-This repo contains the source code for the Pi Deploy APK installer (a fork of Linux Deploy.)
+For the latest news, updates, and disk image releases, visit the Trixie.apk repository.
 
-For the latest news, updates, and disk image releases, visit the [Pi-hole for Android](https://github.com/DesktopECHO/Pi-hole-for-Android) repository.
+
 
 ## Pi Deploy
+
+This repo contains the source code for the Pi Deploy APK installer (a fork of Linux Deploy.)
 
 Copyright (C) 2012-2019  Anton Skshidlevsky, [GPLv3](https://github.com/meefik/pideploy/blob/master/LICENSE)
 
